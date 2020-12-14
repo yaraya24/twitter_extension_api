@@ -1,22 +1,25 @@
 from . import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from . import login_manager
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
+
+    def username_default(context):
+        url_name = context.get_current_parameters()['username']
+        return f'www.twitter.com/{url_name}'
 
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True)
-    email_address = db.Column(db.String(128), unique=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(128), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     created_at = db.Column(db.Date, default=datetime.now())
-    url_name = db.Column(db.String(126))
+    url_name = db.Column(db.String(128), default=username_default)
     verified = db.Column(db.Boolean, default=False)
-    
-
-
-    
+           
     tweets = db.relationship('Tweet', backref='author', lazy='dynamic') #dynamic ensures the query isn't executed immediately so we can do shit like get it ordered alphabetically
     retweets = db.relationship('Retweet', backref='author', lazy='dynamic')
 
@@ -73,3 +76,8 @@ class Hashtag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
     tweet = tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id')) #backref= tweet
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

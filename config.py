@@ -4,6 +4,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASK_APP = 'main.py'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
 
 class DevelopmentConfig(Config):
     DEBUG = True
