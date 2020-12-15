@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Retweet{% endblock %}
+
+{% block page_content %}
+
+<div class="post-body"> {{ tweets.text }}</div>
+
+{% if current_user.is_authenticated %}
+<div>
+{{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+
+<ul class="comments">
+    {% for comment in comments %}
+    <li class='comment'>
+    
+
+    <div class="post_date">{{ moment(comment.created_at).fromNow() }}</div>
+    <div class="post-author">
+        <a href="{{ url_for('main.user', username=comment.author.username) }}"> {{ comment.author.username }}</a>
+    </div>
+    <div class="post-body"> {{comment.body}}</div>
+    {% if current_user == comment.author %}
+    <div class="post-delete"> <a href="#"> Delete</a></div>
+    <div class="edit"> <a href="#"> Edit</a></div>
+    {% endif%}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endblock %}
+
+

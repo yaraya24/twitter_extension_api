@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
            
     tweets = db.relationship('Tweet', backref='author', lazy='dynamic') #dynamic ensures the query isn't executed immediately so we can do shit like get it ordered alphabetically
     retweets = db.relationship('Retweet', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 
     @property
@@ -49,10 +50,12 @@ class Tweet(db.Model):
     text = db.Column(db.String(280), nullable = False)
     language = db.Column(db.String(64), default='English')
     created_at = db.Column(db.DateTime, default=datetime.now())
+    
 
     retweets = db.relationship('Retweet', backref='original', lazy='dynamic')
     scheduled = db.relationship('ScheduledTweet', backref='tweet', lazy='dynamic')
     hashtags = db.relationship('Hashtag', backref='tweet', lazy='dynamic')
+    comments = db.relationship('Comment', backref='tweet', lazy='dynamic')
 
 
 class Retweet(db.Model):
@@ -76,6 +79,15 @@ class Hashtag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
     tweet = tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id')) #backref= tweet
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow())
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id')) #backref = author
+    post_id = db.Column(db.Integer, db.ForeignKey('tweets.id')) #backref = tweet
+
 
 
 @login_manager.user_loader

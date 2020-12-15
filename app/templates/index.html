@@ -13,21 +13,17 @@
 
 <ul class="posts">
     {% for tweet in tweets %}
-    <!-- <li class="post">
-        <div class="profile-thumbnail">
-            <a href="#">
-            
-            </a>
-        </div> -->
-        
+    <li class="post">
+        <div class="post_date">{{ moment(tweet.created_at).toNow() }}</div>
         <div class="post-author">
-            <a href="#"> {{ tweet.author.username }}</a>
+            <a href="{{ url_for('main.user', username=tweet.author.username) }}"> {{ tweet.author.username }}</a>
         </div>
         <div class="post-body"> {{ tweet.text }}</div>
+        <div class="post-comment"> <a href="{{ url_for('main.tweet', tweet_id=tweet.id) }}">Comment</a></div>
     </li>
     {% endfor %}
 </ul>
 
 
-
+<p> the local date and time is {{ moment(current_time).format('LLL')  }}</p>
 {% endblock %}
