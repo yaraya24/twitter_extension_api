@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Twitter{% endblock %}
+
+{% block page_content %}
+
+{% if current_user.is_authenticated %}
+<div>
+{{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+
+<ul class="posts">
+    {% for tweet in tweets %}
+    <!-- <li class="post">
+        <div class="profile-thumbnail">
+            <a href="#">
+            
+            </a>
+        </div> -->
+        
+        <div class="post-author">
+            <a href="#"> {{ tweet.author.username }}</a>
+        </div>
+        <div class="post-body"> {{ tweet.text }}</div>
+    </li>
+    {% endfor %}
+</ul>
+
+
+
+{% endblock %}
