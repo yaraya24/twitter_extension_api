@@ -27,7 +27,6 @@ class User(UserMixin, db.Model):
     verified = db.Column(db.Boolean, default=False)
            
     tweets = db.relationship('Tweet', backref='author', lazy='dynamic') #dynamic ensures the query isn't executed immediately so we can do shit like get it ordered alphabetically
-    retweets = db.relationship('Retweet', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     following = db.relationship('Follow', 
@@ -115,7 +114,7 @@ class Hashtag(db.Model):
     __tablename__ = "hashtags"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
-    tweet = tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id')) #backref= tweet
+    tweet_id =  db.Column(db.Integer, db.ForeignKey('tweets.id')) #backref= tweet
 
 class Comment(db.Model):
     __tablename__ = "comments"

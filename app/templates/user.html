@@ -20,4 +20,27 @@
     {% endif %}
     {% endif %}
 </div>
+
+<div class="">
+    <h1>Tweets</h1>
+    {% for user_tweet in user_tweets %}
+    
+   
+    {{user_tweet.created_at}}
+    {{user_tweet.text}}
+    
+   
+    {% endfor %}
+</div>
+<div class="">
+    <h1>Scheduled Tweets</h1>
+    {% for scheduled_tweet in scheduled_tweets %}
+    
+   
+    {{scheduled_tweet.scheduled.first().scheduled_time}}
+    {{scheduled_tweet.text}}
+    
+   
+    {% endfor %}
+</div>
 {% endblock %}

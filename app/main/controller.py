@@ -90,7 +90,12 @@ def edit_tweet(tweet_id):
 @main.route('/user/<username>', methods=['GET', 'POST'])
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', user=user)
+    # user_tweets = user.tweets.filter(Tweet.scheduled!=None).all()
+    # user_tweets = Tweet.query.filter(Tweet.scheduled == None).filter_by(author=username)
+    user_tweets = Tweet.query.filter_by(author=user).filter(Tweet.scheduled==None).all()
+    scheeduled_tweets = Tweet.query.filter_by(author=user).filter(Tweet.scheduled!=None).all()
+    
+    return render_template('user.html', user=user, user_tweets=user_tweets, scheduled_tweets=scheeduled_tweets)
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
