@@ -55,7 +55,7 @@ class Tweet(db.Model):
     retweets = db.relationship('Retweet', backref='original', lazy='dynamic')
     scheduled = db.relationship('ScheduledTweet', backref='tweet', lazy='dynamic')
     hashtags = db.relationship('Hashtag', backref='tweet', lazy='dynamic')
-    comments = db.relationship('Comment', backref='tweet', lazy='dynamic')
+    comments = db.relationship('Comment', backref='tweet', lazy='dynamic', cascade='all, delete-orphan')
 
 
 class Retweet(db.Model):

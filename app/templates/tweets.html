@@ -25,7 +25,7 @@
     <div class="post-body"> {{comment.body}}</div>
     {% if current_user == comment.author %}
     <div class="post-delete"> <a href="#"> Delete</a></div>
-    <div class="edit"> <a href="#"> Edit</a></div>
+    <div class="edit"> <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}"> Edit</a></div>
     {% endif%}
     </li>
     {% endfor %}

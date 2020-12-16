@@ -1,5 +1,5 @@
 from flask import render_template, session, redirect, url_for, current_app, flash, request
-from .forms import PostTweet, CommentForm, EditProfileForm
+from .forms import PostTweet, CommentForm, EditProfileForm, EditCommentForm
 from flask_login import login_required, current_user
 from .. import db
 from .. models import User, Tweet, Retweet, Comment
@@ -70,3 +70,23 @@ def edit_profile():
     form.username.data = current_user.username
     form.email.data = current_user.email
     return render_template('edit_profile.html', form=form)
+
+
+@main.route('/comment/<int:comment_id>', methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    form = EditCommentForm()
+    comment = Comment.query.get_or_404(comment_id)
+    tweet_id = comment.tweet.id
+    if form.validate_on_submit():
+        if form.delete:
+            db.session.delete(comment)
+            db.session.commit()
+            return redirect(url_for('main.tweet', tweet_id=tweet_id))
+        comment.body = form.body.data
+        comment.created_at = datetime.utcnow()
+        db.session.add(comment)
+        db.session.commit()
+        flash("Successfully Updated")
+        return redirect(url_for('main.tweet', tweet_id=comment.tweet.id))
+    form.body.data = comment.body
+    return render_template('comments.html', form=form)
