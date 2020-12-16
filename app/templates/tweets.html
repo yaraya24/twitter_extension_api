@@ -4,8 +4,18 @@
 {% block title %}Retweet{% endblock %}
 
 {% block page_content %}
+<div class="post-author">
+    <a href="{{ url_for('main.user', username=tweet.author.username) }}"> {{ tweet.author.username }}</a>
+</div>
+<div class="post-body"> {{ tweet.text }}</div>
+{% if current_user == tweet.author %}
 
-<div class="post-body"> {{ tweets.text }}</div>
+{% for hashtag in hashtags %}
+    #{{ hashtag.name }}
+{% endfor %}
+
+<div class="edit"> <a href="{{ url_for('main.edit_tweet', tweet_id=tweet.id) }}"> Edit Tweet</a></div>
+{% endif%}
 
 {% if current_user.is_authenticated %}
 <div>
@@ -24,7 +34,6 @@
     </div>
     <div class="post-body"> {{comment.body}}</div>
     {% if current_user == comment.author %}
-    <div class="post-delete"> <a href="#"> Delete</a></div>
     <div class="edit"> <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}"> Edit</a></div>
     {% endif%}
     </li>

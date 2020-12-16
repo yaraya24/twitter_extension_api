@@ -9,5 +9,15 @@
 
 <div class="page-header">
     <h1>{{ user.username }}</h1>
-
+    Tweets: <span class="badge">{{ user.tweets.count() }}</span>
+    Followers: <span class="badge">{{ user.followers.count() }}</span>
+    Following: <span class="badge">{{ user.following.count() }}</span>
+    {% if current_user.is_authenticated and user != current_user%}
+    {% if not current_user.is_following(user)%}
+    <a href="{{ url_for('main.follow', username=user.username) }}"class="btn btn-primary">Follow</a>    
+    {% else %}
+    <a href="{{ url_for('main.follow', username=user.username) }}">Unfollow</a>    
+    {% endif %}
+    {% endif %}
+</div>
 {% endblock %}

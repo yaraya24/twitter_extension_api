@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
+
 {% block title %}Twitter{% endblock %}
 
 {% block page_content %}
 
 {% if current_user.is_authenticated %}
-<div>
-{{ wtf.quick_form(form) }}
-</div>
+{{wtf.quick_form(form)}}
 {% endif %}
 
 <ul class="posts">
     {% for tweet in tweets %}
     <li class="post">
-        <div class="post_date">{{ moment(tweet.created_at).toNow() }}</div>
+        <div class="post_date">{{ moment(tweet.created_at, 'MMDDYYYY').fromNow() }}</div>
         <div class="post-author">
             <a href="{{ url_for('main.user', username=tweet.author.username) }}"> {{ tweet.author.username }}</a>
+            
         </div>
         <div class="post-body"> {{ tweet.text }}</div>
         <div class="post-comment"> <a href="{{ url_for('main.tweet', tweet_id=tweet.id) }}">Comment</a></div>
