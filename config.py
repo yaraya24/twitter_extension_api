@@ -13,6 +13,8 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     DEBUG = True
+    TESTING = True
+    WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://yaraya24:yaraya24@localhost:5432/twitter_api'
 
 class ProductionConfig(Config):
