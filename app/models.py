@@ -88,8 +88,8 @@ class Tweet(db.Model):
     language = db.Column(db.String(64), default='English')
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    retweets = db.relationship('Retweet', backref='original', lazy='dynamic')
-    scheduled = db.relationship('ScheduledTweet', backref='tweet', lazy='dynamic')
+    
+    scheduled = db.relationship('ScheduledTweet', backref='tweet', lazy='dynamic', cascade='all, delete-orphan')
     hashtags = db.relationship('Hashtag', backref='tweet', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='tweet', lazy='dynamic', cascade='all, delete-orphan')
 

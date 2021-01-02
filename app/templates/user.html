@@ -7,7 +7,7 @@
     <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">    Edit Profile</a>
 {% endif %}
 
-<div class="page-header">
+<div class="profile-header">
     <h1>{{ user.username }}</h1>
     Tweets: <span class="badge">{{ user.tweets.count() }}</span>
     Followers: <span class="badge">{{ user.followers.count() }}</span>
@@ -16,22 +16,36 @@
     {% if not current_user.is_following(user)%}
     <a href="{{ url_for('main.follow', username=user.username) }}"class="btn btn-primary">Follow</a>    
     {% else %}
-    <a href="{{ url_for('main.follow', username=user.username) }}">Unfollow</a>    
+    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">Unfollow</a>    
     {% endif %}
     {% endif %}
 </div>
-
-<div class="">
-    <h1>Tweets</h1>
+<h1 class="display-4">Your Tweets</h1>
+<ul class="tweets">
+    
     {% for user_tweet in user_tweets %}
     
-   
-    {{user_tweet.created_at}}
-    {{user_tweet.text}}
+
+        <li class="tweet">
+            
+        <div class = "tweet-content">
+            
+            
+            <div class="tweet-date">{{ moment(user_tweet.created_at, 'MMDDYYYY').fromNow() }}</div>
+                
+            </div>
+            <div class="tweet-body"> {{ user_tweet.text }}</div>
+            <div class="tweet-comment"> <a href="{{ url_for('main.tweet', tweet_id=user_tweet.id) }}">Comments</a></div>
+        
+        </div>
+
+        </li>
+
     
-   
     {% endfor %}
-</div>
+
+</ul>
+
 <div class="">
     <h1>Scheduled Tweets</h1>
     {% for scheduled_tweet in scheduled_tweets %}
