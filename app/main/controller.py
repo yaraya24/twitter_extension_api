@@ -16,15 +16,19 @@ from .forms import (
 )
 from flask_login import login_required, current_user
 from .. import db
-from ..models import User, Tweet, Retweet, Comment, Hashtag, ScheduledTweet
+from ..models import User, Tweet, Comment, Hashtag, ScheduledTweet
 from . import main
-from datetime import datetime, date
+from datetime import datetime
 
 
 @main.route("/", methods=["GET", "POST"])
 def index():
+    """Route to the homepage that renders the 'index.html' template
+    and utilises the posttweet form to allow users to make a tweet.
+    """
+
     form = PostTweet()
-    if form.validate_on_submit():
+    if form.validate_on_submit():  # Checks if the form has been successfully submitted
         tweet = Tweet(
             text=form.tweet_text.data, author=current_user._get_current_object()
         )
@@ -40,29 +44,20 @@ def index():
             db.session.add(scheduled_tweet)
         db.session.commit()
         return redirect(url_for("main.index"))
-    tweets = Tweet.query.filter(Tweet.scheduled == None).all()
+    tweets = Tweet.query.filter(
+        Tweet.scheduled == None
+    ).all()  # Only shows tweets that aren't scheduled.
     return render_template(
         "index.html", form=form, tweets=tweets, current_time=datetime.utcnow()
     )
 
 
-# @main.route('/retweet/<int:tweet_id>', methods=['GET', 'POST'])
-# @login_required
-# def retweet(tweet_id):
-#     form = PostTweet()
-#     original_tweet = Tweet.query.get_or_404(tweet_id)
-#     if form.validate_on_submit():
-#         retweet = Retweet(author=current_user._get_current_object(), original=original_tweet, text=form.tweet_text.data)
-#         db.session.add(retweet)
-#         db.session.commit()
-#         flash('Successfully Retweeted')
-#         return redirect(url_for('main.index'))
-#     form.tweet_text.data = 'Add a comment'
-#     return render_template('retweet.html', form=form, original_tweet=original_tweet)
-
-
 @main.route("/tweet/<int:tweet_id>", methods=["GET", "POST"])
 def tweet(tweet_id):
+    """The route for a particular tweet identified by its id.
+    Allows users to comment from this route.
+    """
+
     tweet = Tweet.query.get_or_404(tweet_id)
     form = CommentForm()
     if form.validate_on_submit():
@@ -83,6 +78,10 @@ def tweet(tweet_id):
 @main.route("/tweet/<int:tweet_id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_tweet(tweet_id):
+    """Route that allows authorized users to edit/delete
+    their own tweets.
+    """
+
     tweet = Tweet.query.get_or_404(tweet_id)
     if current_user != tweet.author:
         return render_template("404.html"), 404
@@ -111,9 +110,11 @@ def edit_tweet(tweet_id):
 
 @main.route("/user/<username>", methods=["GET", "POST"])
 def user(username):
+    """The route for a user's profile page which has all of
+    their tweets and if they are authorized, their scheduled
+    tweets aswell.
+    """
     user = User.query.filter_by(username=username).first_or_404()
-    # user_tweets = user.tweets.filter(Tweet.scheduled!=None).all()
-    # user_tweets = Tweet.query.filter(Tweet.scheduled == None).filter_by(author=username)
     user_tweets = (
         Tweet.query.filter_by(author=user).filter(Tweet.scheduled == None).all()
     )
@@ -136,6 +137,9 @@ def user(username):
 @main.route("/edit-profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():
+    """Route that allows an authorized user to edit
+    their account (email, username and password).
+    """
     form = EditProfileForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -152,6 +156,7 @@ def edit_profile():
 
 @main.route("/comment/<int:comment_id>", methods=["GET", "POST"])
 def edit_comment(comment_id):
+    """ Route that allows users to edit/delete their own comments"""
     form = EditCommentForm()
     comment = Comment.query.get_or_404(comment_id)
     tweet_id = comment.tweet.id
@@ -173,6 +178,9 @@ def edit_comment(comment_id):
 @main.route("/follow/<username>", methods=["GET", "POST"])
 @login_required
 def follow(username):
+    """ Route that follows a user and if they are already following,
+    to unfollow.
+    """
     user = User.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for("main.index"))

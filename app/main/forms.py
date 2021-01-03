@@ -5,7 +5,6 @@ from wtforms import (
     TextAreaField,
     PasswordField,
     Field,
-    BooleanField,
     ValidationError,
 )
 from wtforms.widgets import TextInput
@@ -17,15 +16,23 @@ from flask_login import current_user
 
 
 class CustomField(Field):
+    """ Custom form class for hashtags"""
     widget = TextInput()
 
     def _value(self):
+        """ Represents the hashtags for a tweet with
+        '#' as they are stored as single words in the 
+        database.
+        """
         if self.data:
             return "#" + " #".join(self.data)
         else:
             return ""
 
     def process_formdata(self, valuelist):
+        """ Function to ensure that if '#' is included,
+        it is stripped before adding it to the database."""
+
         if valuelist:
             self.data = [x.strip() for x in valuelist[0].split("#")]
         else:
@@ -33,19 +40,26 @@ class CustomField(Field):
 
 
 class PostTweet(FlaskForm):
+    """ Class to create a form to allow users to post tweets."""
     tweet_text = TextAreaField(
         "What you thinking?", validators=[DataRequired(), Length(1, 280)]
     )
     hashtags = CustomField()
     schedule_time = DateField("Schedule Date", validators=[Optional()])
-    submit = SubmitField("Post")
+    submit = SubmitField("Tweet")
 
     def validate_schedule_time(form, field):
+        """ Validation check to ensure the schedule_time if provided,
+        is in the future.
+        """
+
         if field.data is not None and field.data < date.today():
             raise ValidationError("Date must be in the future")
 
 
 class EditTweetForm(FlaskForm):
+    """ Form to allow the editing/deletion of a tweet."""
+
     tweet_text = TextAreaField(
         "What you thinking?", validators=[DataRequired(), Length(1, 280)]
     )
@@ -55,17 +69,23 @@ class EditTweetForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
+    """ Form to allow users to comment on a tweet."""
+
     body = StringField("", validators=[DataRequired()])
     submit = SubmitField("Comment")
 
 
 class EditCommentForm(FlaskForm):
+    """ Form to edit a comment."""
+
     body = StringField("", validators=[DataRequired()])
     edit = SubmitField("Edit")
     delete = SubmitField("Delete")
 
 
 class EditProfileForm(FlaskForm):
+    """ Form to edit a user's profile."""
+
     email = StringField("Email", validators=[DataRequired(), Length(1, 64), Email()])
     username = StringField(
         "Username",
@@ -90,6 +110,8 @@ class EditProfileForm(FlaskForm):
     submit = SubmitField("Update")
 
     def validate_email(self, field):
+        """ Function that checks if an email has already been registered."""
+
         if (
             User.query.filter_by(email=field.data).first()
             and field.data != current_user.email
@@ -97,6 +119,8 @@ class EditProfileForm(FlaskForm):
             raise ValidationError("Email already registered.")
 
     def validate_username(self, field):
+        """ Function that checks if a username has already been registered."""
+
         if (
             User.query.filter_by(username=field.data).first()
             and field.data != current_user.username

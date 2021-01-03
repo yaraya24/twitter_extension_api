@@ -18,30 +18,38 @@ from datetime import datetime
 
 @api.route("/tweets/all")
 def get_all_tweets():
+    """ API endpoint that returns all tweets that aren't scheduled
+    in JSON format.
+    """
     tweets = Tweet.query.filter(Tweet.scheduled == None).all()
     return jsonify(tweets_schema.dump(tweets))
 
 
 @api.route("/tweets/<int:id>")
 def get_tweet(id):
+    """ API endpoint that returns a specific tweet in JSON format."""
+
     tweets = Tweet.query.get_or_404(id)
     return jsonify(tweet_schema.dump(tweets))
 
 
 @api.route("/users/<int:id>")
 def get_user(id):
+    """ API endpoint that returns information on a specific user in JSON."""
     user = User.query.get_or_404(id)
     return jsonify(user_schema.dump(user))
 
 
 @api.route("/users/all")
 def get_all_users():
+    """ API endpoint that returns all users in JSON."""
     users = User.query.all()
     return jsonify(users_schema.dump(users))
 
 
 @api.route("/comments/all")
 def get_all_comments():
+    """ API endpoint that returns all comments in JSON."""
     comments = Comment.query.all()
     return jsonify(comment_schema.dump(comments))
 
@@ -49,6 +57,8 @@ def get_all_comments():
 @api.route("/post_tweet", methods=["POST"])
 @jwt_required
 def post_tweet():
+    """ API endpoint that allows authorised users to 
+    create a tweet and a scheduled tweet."""
     tweet_text = request.json.get("text")
     schedule_time = request.json.get("schedule_time")
     if tweet_text is None or tweet_text == "":
@@ -70,6 +80,8 @@ def post_tweet():
 @api.route("/delete_tweet/<int:id>", methods=["DELETE"])
 @jwt_required
 def delete_tweet(id):
+    """ API route that allows authorised users to delete
+    a tweet that they authored."""
     author = User.query.filter_by(username=get_jwt_identity()).first_or_404()
     tweet = Tweet.query.get_or_404(id)
     if tweet.author is not author:
@@ -81,6 +93,8 @@ def delete_tweet(id):
 
 @api.route("/all_data", methods=["GET"])
 def all_data():
+    """ API endpoint that returns all data within the
+    database in JSON."""
     all_data = {}
 
     all_users = db.session.execute("SELECT * FROM users")
@@ -118,6 +132,9 @@ def all_data():
 
 @api.route("/statistics", methods=["GET"])
 def statistics():
+    """ API endpoint that uses RAW SQL to retrieve
+    interesting information regarding the data.
+    """
     statistics = {}
     tweet_count = db.session.execute("SELECT COUNT(*) FROM tweets")
     for r in tweet_count:

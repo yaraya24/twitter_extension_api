@@ -2,6 +2,7 @@ import os
 
 
 class Config:
+    """ Important configuration variables"""
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASK_APP = "main.py"
@@ -19,7 +20,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True
-    WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = False  # Removes CSRF token for testing purposes
     SQLALCHEMY_DATABASE_URI = (
         "postgresql+psycopg2://yaraya24:yaraya24@localhost:5432/twitter_api"
     )

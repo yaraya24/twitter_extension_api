@@ -10,7 +10,7 @@ migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_shell_context():
+    """ Function that passes important classes to the flask shell """
     return dict(
-        db=db, User=User, Tweet=Tweet, Retweet=Retweet,
-        ScheduledTweet=ScheduledTweet
+        db=db, User=User, Tweet=Tweet, Retweet=Retweet, ScheduledTweet=ScheduledTweet
     )

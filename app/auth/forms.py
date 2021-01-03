@@ -6,15 +6,17 @@ from ..models import User
 
 
 class LoginForms(FlaskForm):
-    username = StringField(
-        "Username", validators=[DataRequired(), Length(1 - 64)]
-    )  # The email() validator ensures the email provided is an actual email (has @ and .com)
+    """ Form to allow users to login if they have an account."""
+
+    username = StringField("Username", validators=[DataRequired(), Length(1 - 64)])
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Keep me logged in")
     submit = SubmitField("Log In")
 
 
 class RegistrationForm(FlaskForm):
+    """ Form to allow users to register an account."""
+
     email = StringField("Email", validators=[DataRequired(), Length(1, 64), Email()])
     username = StringField(
         "Username",
@@ -39,9 +41,11 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
     def validate_email(self, field):
+        """ Function that checks if an email has already been registered."""
         if User.query.filter_by(email=field.data).first():
             raise ValidationError("Email already registered.")
 
     def validate_username(self, field):
+        """ Function that checks if a username has already been registered."""
         if User.query.filter_by(username=field.data).first():
             raise ValidationError("Username already in use.")

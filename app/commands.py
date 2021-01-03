@@ -6,6 +6,8 @@ db_commands = Blueprint("db_commands", __name__)
 
 @db_commands.cli.command("drop")
 def drop_db():
+    """ Custom CLI command for Flask to remove all tables"""
+
     db.drop_all()
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     print("Tables deleted")
@@ -13,6 +15,8 @@ def drop_db():
 
 @db_commands.cli.command("seed")
 def seed_db():
+    """ Custom CLI command to populate the database with fake data"""
+
     from .models import User, Tweet, ScheduledTweet, Comment, Hashtag, Follow
     from faker import Faker
     from random import choice
@@ -37,13 +41,16 @@ def seed_db():
                 Users.append(u)
                 i += 1
             except IntegrityError:
-                db.session.rollback()
+                db.session.rollback()  # Ensures if there are duplicate values to rollback
 
     def tweets(count=50):
         fake = Faker()
+        source = choice(["Web", "API"])
         for i in range(count):
             u = choice(Users)
-            t = Tweet(text=fake.text(), author=u, created_at=fake.past_date())
+            t = Tweet(
+                text=fake.text(), author=u, created_at=fake.past_date(), source=source
+            )
             db.session.add(t)
             Tweets.append(t)
         db.session.commit()
@@ -59,7 +66,7 @@ def seed_db():
             db.session.add(c)
         db.session.commit()
 
-    def hashtags(count=200):
+    def hashtags(count=100):
         hashtag_values = [
             "Love",
             "Instagood",

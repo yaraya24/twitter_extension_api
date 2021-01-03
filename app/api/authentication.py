@@ -5,6 +5,7 @@ from . import api
 
 
 def verify_password(username, password):
+    """ Function that will verify a password"""
     if username == "":
         return jsonify({"msg": "Invalid credentials"}), 400
     user = User.query.filter_by(username=username).first()
@@ -18,6 +19,10 @@ def verify_password(username, password):
 
 @api.route("/login", methods=["POST"])
 def login():
+    """API endpoint that provides a JWT token if
+    the authenticated.
+    """
+
     username = request.json.get("username", None)
     password = request.json.get("password", None)
     return verify_password(username, password)

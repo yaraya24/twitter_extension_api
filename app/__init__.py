@@ -17,6 +17,10 @@ login_manager.login_view = "auth.login"
 
 
 def create_app(config_name):
+    """ Application factory that reigsters all the blueprints,
+    extensions and configurations for the flask application.
+    """
+
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
