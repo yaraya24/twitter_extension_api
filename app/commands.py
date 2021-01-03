@@ -44,9 +44,9 @@ def seed_db():
                 db.session.rollback()  # Ensures if there are duplicate values to rollback
 
     def tweets(count=50):
-        fake = Faker()
-        source = choice(["Web", "API"])
+        fake = Faker()    
         for i in range(count):
+            source = choice(["Web", "API"])
             u = choice(Users)
             t = Tweet(
                 text=fake.text(), author=u, created_at=fake.past_date(), source=source

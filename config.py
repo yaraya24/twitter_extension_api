@@ -1,41 +1,38 @@
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class Config:
-    """ Important configuration variables"""
+    """ Important configuration variables that are set 
+    in the .env file"""
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    FLASK_APP = "main.py"
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "hard to guess string"
-    JWT_SECRET_KEY = "duck"
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "Change this in .env"
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or "Change this in .env"
+    ENVIRONMENT = os.environ.get("FLASK_ENV")
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = (
-        "postgresql+psycopg2://yaraya24:yaraya24@localhost:5432/twitter_api"
-    )
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI_DEVELOPMENT")
 
 
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True
-    WTF_CSRF_ENABLED = False  # Removes CSRF token for testing purposes
-    SQLALCHEMY_DATABASE_URI = (
-        "postgresql+psycopg2://yaraya24:yaraya24@localhost:5432/twitter_api"
-    )
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI_TESTING")
 
 
 class ProductionConfig(Config):
 
-    SQLALCHEMY_DATABASE_URI = (
-        "postgresql+psycopg2://yaraya24:yaraya24@localhost:5432/twitter_api"
-    )
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI_PRODUCTION")
 
 
 config = {
     "development": DevelopmentConfig,
     "testing": TestingConfig,
     "production": ProductionConfig,
-    "default": DevelopmentConfig,
+    "default": DevelopmentConfig
 }
