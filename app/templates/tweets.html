@@ -4,42 +4,41 @@
 {% block title %}Retweet{% endblock %}
 
 {% block page_content %}
-<div class="post-author">
+<div class="tweet-author">
     <a href="{{ url_for('main.user', username=tweet.author.username) }}"> {{ tweet.author.username }}</a>
 </div>
-<div class="post-body"> {{ tweet.text }}</div>
+<div class="tweet-body"> <h3>{{ tweet.text }}</h3></div>
+<div class="tweet-body">{% for hashtag in hashtags %}
+    #{{ hashtag.name }}
+    {% endfor %}</div>
 {% if current_user == tweet.author %}
 
-{% for hashtag in hashtags %}
-    #{{ hashtag.name }}
-{% endfor %}
+
 
 <div class="edit"> <a href="{{ url_for('main.edit_tweet', tweet_id=tweet.id) }}"> Edit Tweet</a></div>
 {% endif%}
 
 {% if current_user.is_authenticated %}
-<div>
-{{ wtf.quick_form(form) }}
+<div class="comment-form">
+    {{ wtf.quick_form(form) }}
 </div>
 {% endif %}
 
 <ul class="comments">
     {% for comment in comments %}
     <li class='comment'>
-    
 
-    <div class="post_date">{{ moment(comment.created_at).fromNow() }}</div>
-    <div class="post-author">
-        <a href="{{ url_for('main.user', username=comment.author.username) }}"> {{ comment.author.username }}</a>
-    </div>
-    <div class="post-body"> {{comment.body}}</div>
-    {% if current_user == comment.author %}
-    <div class="edit"> <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}"> Edit</a></div>
-    {% endif%}
+
+        <div class="comment-date">{{ moment(comment.created_at).fromNow() }}</div>
+        <div class="comment-author">
+            <a href="{{ url_for('main.user', username=comment.author.username) }}"> {{ comment.author.username }}</a>
+        </div>
+        <div class="comment-body"> {{comment.body}}</div>
+        {% if current_user == comment.author %}
+        <div class="edit"> <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}"> Edit</a></div>
+        {% endif%}
     </li>
     {% endfor %}
 
 </ul>
 {% endblock %}
-
-

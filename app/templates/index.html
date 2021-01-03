@@ -12,32 +12,32 @@
 {% endif %}
 
 <ul class="tweets">
-    
-    {% for tweet in tweets %}
-    
 
-        <li class="tweet">
-            
-        <div class = "tweet-content">
-            
-            
+    {% for tweet in tweets %}
+
+
+    <li class="tweet">
+
+        <div class="tweet-content">
+
+
             <div class="tweet-date">{{ moment(tweet.created_at, 'MMDDYYYY').fromNow() }}</div>
             <div class="tweet-author">
                 <a href="{{ url_for('main.user', username=tweet.author.username) }}"> by {{ tweet.author.username }}</a>
-                
+
             </div>
             <div class="tweet-body"> {{ tweet.text }}</div>
-            <div class="tweet-comment"> <a href="{{ url_for('main.tweet', tweet_id=tweet.id) }}">Comment</a></div>
-        
+            <div class="tweet-comment"> <a href="{{ url_for('main.tweet', tweet_id=tweet.id) }}">Comments</a></div>
+
         </div>
 
-        </li>
+    </li>
 
-    
+
     {% endfor %}
 
 </ul>
 
 
-<p> the local date and time is {{ moment(current_time).format('LLL')  }}</p>
+<p> the local date and time is {{ moment(current_time).format('LLL') }}</p>
 {% endblock %}

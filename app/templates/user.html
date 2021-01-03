@@ -3,8 +3,8 @@
 {% endblock %}
 
 {% block page_content %}
-{% if user == current_user %}   
-    <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">    Edit Profile</a>
+{% if user == current_user %}
+<a class="btn btn-default" href="{{ url_for('main.edit_profile') }}"> Edit Profile</a>
 {% endif %}
 
 <div class="profile-header">
@@ -14,47 +14,51 @@
     Following: <span class="badge">{{ user.following.count() }}</span>
     {% if current_user.is_authenticated and user != current_user%}
     {% if not current_user.is_following(user)%}
-    <a href="{{ url_for('main.follow', username=user.username) }}"class="btn btn-primary">Follow</a>    
+    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">Follow</a>
     {% else %}
-    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">Unfollow</a>    
+    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">Unfollow</a>
     {% endif %}
     {% endif %}
 </div>
-<h1 class="display-4">Your Tweets</h1>
+<h1 class="display-3">Your Tweets</h1>
 <ul class="tweets">
-    
     {% for user_tweet in user_tweets %}
-    
+    <li class="tweet">
 
-        <li class="tweet">
-            
-        <div class = "tweet-content">
-            
-            
+        <div class="tweet-content">
+
+
             <div class="tweet-date">{{ moment(user_tweet.created_at, 'MMDDYYYY').fromNow() }}</div>
-                
-            </div>
             <div class="tweet-body"> {{ user_tweet.text }}</div>
             <div class="tweet-comment"> <a href="{{ url_for('main.tweet', tweet_id=user_tweet.id) }}">Comments</a></div>
-        
+
         </div>
 
-        </li>
-
-    
+    </li>
     {% endfor %}
+
+
 
 </ul>
-
-<div class="">
-    <h1>Scheduled Tweets</h1>
+{% if current_user.is_authenticated and user == current_user%}
+<h1 class="display-3"> {{scheeduled_tweets_count}} Scheduled Tweet(s)</h1>
+<ul class="tweets">
     {% for scheduled_tweet in scheduled_tweets %}
-    
-   
-    {{scheduled_tweet.scheduled.first().scheduled_time}}
-    {{scheduled_tweet.text}}
-    
-   
+    <li class="tweet">
+
+        <div class="tweet-content">
+
+
+            <div class="tweet-date">Scheduled For: {{
+                moment(scheduled_tweet.scheduled.first().scheduled_time).format('MMMM Do YYYY') }}</div>
+            <div class="tweet-body"> {{scheduled_tweet.text}}</div>
+        </div>
+
+    </li>
     {% endfor %}
-</div>
+
+
+
+</ul>
+{% endif %}
 {% endblock %}

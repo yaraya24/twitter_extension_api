@@ -1,9 +1,8 @@
 from .. import marsh
 from ..models import User, Tweet, Comment, ScheduledTweet, Hashtag
 from marshmallow import fields
-from marshmallow.validate import Length
 
-    
+
 class CommentSchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = Comment
@@ -24,9 +23,11 @@ class UserSchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_only = ["password_hash"]
-    
-    tweets = fields.Nested(TweetSchema(only = ["created_at", "id", "language", "source", "text"]), many=True)
-    
+
+    tweets = fields.Nested(
+        TweetSchema(only=["created_at", "id", "language", "source", "text"]),
+        many=True
+    )
 
 
 class ScheduledTweetSchema(marsh.SQLAlchemyAutoSchema):
@@ -37,6 +38,7 @@ class ScheduledTweetSchema(marsh.SQLAlchemyAutoSchema):
 class HashtagSchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = Hashtag
+
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
